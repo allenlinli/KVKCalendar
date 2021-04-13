@@ -133,6 +133,14 @@ extension TimelinePageView: UIPageViewControllerDataSource, UIPageViewController
     
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard var newIndex = (viewController as? TimelineContainerVC)?.index else { return nil }
+
+        //disable scroll to the past week
+        let currentPage = pages[newIndex]
+        let firstDateOfTheWeek = currentPage!.dates[0]!
+        print("firstDateOfTheWeek: \(firstDateOfTheWeek)")
+        if firstDateOfTheWeek < Date() {
+            return nil
+        }
         
         newIndex -= 1
         guard let newTimelineView = pages[newIndex] else { return nil }
