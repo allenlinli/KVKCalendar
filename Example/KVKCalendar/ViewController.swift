@@ -14,9 +14,10 @@ final class ViewController: UIViewController {
     private var events = [Event]()
     
     private var selectDate: Date = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yyyy"
-        return formatter.date(from: "14.12.2020") ?? Date()
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "dd.MM.yyyy"
+//        return formatter.date(from: "14.04.2021") ?? Date()
+        return Date()
     }()
     
     private lazy var todayButton: UIBarButtonItem = {
@@ -211,8 +212,13 @@ extension ViewController: CalendarDataSource {
             
             return event.transform(text: "\(startTime) - \(endTime)\n\(event.title ?? "")")
         }
-        
-        return events + mappedEvents
+
+        var combinedEvents = events + mappedEvents
+        let now = Date()
+        combinedEvents = combinedEvents.filter { (event) -> Bool in
+            event.start >= now
+        }
+        return combinedEvents
     }
     
     func willDisplayEventView(_ event: Event, frame: CGRect, date: Date?) -> EventViewGeneral? {
@@ -230,7 +236,6 @@ extension ViewController: CalendarDataSource {
             return cell
         case .day, .week, .month:
             guard dateParameter.date?.day == Date().day else { return nil }
-            
             let cell = (view as? UICollectionView)?.dequeueCell(indexPath: indexPath) { (cell: CustomDayCell) in
                 cell.imageView.image = UIImage(named: "ic_stub")
             }
