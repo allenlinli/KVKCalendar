@@ -211,8 +211,13 @@ extension ViewController: CalendarDataSource {
             
             return event.transform(text: "\(startTime) - \(endTime)\n\(event.title ?? "")")
         }
-        
-        return events + mappedEvents
+
+        var combinedEvents = events + mappedEvents
+        let now = Date()
+        combinedEvents = combinedEvents.filter { (event) -> Bool in
+            event.start >= now
+        }
+        return combinedEvents
     }
     
     func willDisplayEventView(_ event: Event, frame: CGRect, date: Date?) -> EventViewGeneral? {
